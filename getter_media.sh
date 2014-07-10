@@ -1,9 +1,11 @@
 #!/bin/bash
+#script for scraping movie IDs and name ids from IMDb. This script recusively crawls IMDb pages and extracts related movie/people/character ids and stores them in txt files.
 #USAGE:	-getid  => gets movie ids into list_(imdb|name|character)_id.txt
 #		-getinfo=> gets data(XML/JSON/JSONP) and puts in store_data
 #		-print  => prints current id/info status
-#script for scraping imdb_ids,name_ids and character_ids from IMDb. This script recusively crawls IMDb pages and extracts related movie/people/character ids and stores them in txt files.
-#Added functionality to get data from omdbapi.com in JSON/XML format. Tweak custom URL according to need.
+#
+#Added functionality to get data from omdbapi in JSON/XML format. Tweak custom URL according to need.
+#Added functionality to get data from myapifilms in JSON/XML/JSONP format. Tweak custom URL according to need.
 #CAUTION: DON'T RUN -getid and -getinfo together in same argument rather use separate windows!!
 ########################################################################
 #CONFIG
@@ -23,7 +25,8 @@ store_format="JSON";
 store_data="$rootdir/data";
 
 query_imdb="www.imdb.com/";
-query_omdbapi=" http://www.omdbapi.com/?r=$store_format&plot=full&tomatoes=true"; #&i=id #all info together #searches only by id/title
+query_omdbapi="http://www.omdbapi.com/?r=$store_format&plot=full&tomatoes=true"; #&i=id #all info together #searches only by id/title
+query_myapifilms="http://www.myapifilms.com/imdb?actors=F&actorTrivia=0&format=$store_format&aka=1&business=1&filmography=0&movieTrivia=1&technical=1&seasons=1&trailer=1&uniqueName=1";
 
 ########################################################################
 #Existance Checks
@@ -147,7 +150,8 @@ case "$1" in
 	#get movie-id from $list_imdb_id, get info for that id from api
 	while read line;
 	do
-		queryurl=$query_omdbapi"&i=$line";
+		#queryurl=$query_omdbapi"&i=$line";
+		queryurl=$query_myapifilms"&idIMDB=$line";
 		##displayinfo
 		wc -l $list_imdb_id; #KEEP TRACK HOW MANY MOVIE IDS LISTED TILL NOW.
 		#wc -l $list_name_id; #KEEP TRACK HOW MANY people IDS LISTED TILL NOW.
